@@ -1,0 +1,3 @@
+# Singleton Pattern
+
+## Definition
