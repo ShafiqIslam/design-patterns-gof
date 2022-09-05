@@ -6,7 +6,7 @@ Builder pattern aims to **“Separate the construction of a complex object from 
 
 ## UML
 
-![UML of Abstract Factory](uml.jpg)
+![UML of Builder](uml.jpg)
 
 ## How to Implement
 
