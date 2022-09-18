@@ -3,74 +3,80 @@ using System.Collections.Generic;
 
 namespace DesignPatterns.Structural.Decorator
 {
-    interface IRequestHandler
+    interface IStringDecorator
     {
-        void Handle();
+        string Decorate(string s);
     }
 
-    class Controller : IRequestHandler
+    abstract class StringDecorator : IStringDecorator
     {
-        public void Handle()
-        {
-            Console.WriteLine("Process in controller. Return Response.");
-        }
-    }
+        protected IStringDecorator _next;
 
-    abstract class RequestMiddleware : IRequestHandler
-    {
-        protected IRequestHandler _next;
-
-        public RequestMiddleware(IRequestHandler next)
+        public StringDecorator(IStringDecorator next)
         {
             this._next = next;
         }
+        
+        public StringDecorator()
+        {
+        }
 
-        public virtual void Handle()
+        public virtual string Decorate(string s)
         {
             if (this._next != null)
             {
-                this._next.Handle();
+                return this._next.Decorate(s);
             }
+
+            return s;
         }
     }
 
-    class LoggingMiddleware : RequestMiddleware
+    class BoldDecorator : StringDecorator
     {
-        public LoggingMiddleware(IRequestHandler next) : base(next)
+        public BoldDecorator(IStringDecorator next) : base(next)
         {
         }
 
-        public override void Handle()
+        public BoldDecorator()
         {
-            Console.WriteLine("Started Logging.");
-            base.Handle();
-            Console.WriteLine("Ended Logging.");
+        }
+
+        public override string Decorate(string s)
+        {
+            return "<b>" + base.Decorate(s) + "</b>";
         }
     }
 
-    class CachingMiddleware : RequestMiddleware
+    class ItalicDecorator : StringDecorator
     {
-        public CachingMiddleware(IRequestHandler next) : base(next)
+        public ItalicDecorator(IStringDecorator next) : base(next)
         {
         }
 
-        public override void Handle()
+        public ItalicDecorator()
         {
-            base.Handle();
-            Console.WriteLine("Response cached.");
+        }
+
+        public override string Decorate(string s)
+        {
+            return "<i>" + base.Decorate(s) + "</i>";
         }
     }
 
-    class AuthMiddleware : RequestMiddleware
+    class UnderlineDecorator : StringDecorator
     {
-        public AuthMiddleware(IRequestHandler next) : base(next)
+        public UnderlineDecorator(IStringDecorator next) : base(next)
         {
         }
 
-        public override void Handle()
+        public UnderlineDecorator()
         {
-            Console.WriteLine("Authentication checked.");
-            base.Handle();
+        }
+
+        public override string Decorate(string s)
+        {
+            return "<u>" + base.Decorate(s) + "</u>";
         }
     }
     
@@ -78,9 +84,15 @@ namespace DesignPatterns.Structural.Decorator
     {
         static void Main(string[] args)
         {
-            IRequestHandler handler = new LoggingMiddleware(new CachingMiddleware(new AuthMiddleware(new Controller())));
+            Console.WriteLine((new BoldDecorator(new ItalicDecorator(new UnderlineDecorator()))).Decorate("String One"));
 
-            handler.Handle();
+            Console.WriteLine((new ItalicDecorator(new BoldDecorator(new UnderlineDecorator()))).Decorate("String Two"));
+
+            Console.WriteLine((new UnderlineDecorator(new BoldDecorator(new ItalicDecorator()))).Decorate("String Three"));
+
+            Console.WriteLine((new ItalicDecorator(new BoldDecorator())).Decorate("String Four"));
+
+            Console.WriteLine((new ItalicDecorator()).Decorate("String Five"));
         }
     }
 }
