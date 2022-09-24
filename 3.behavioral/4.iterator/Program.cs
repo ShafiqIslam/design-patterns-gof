@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace RefactoringGuru.DesignPatterns.Iterator.Conceptual
+namespace DesignPatterns.Behavioral.Iterator
 {
     class Program
     {
